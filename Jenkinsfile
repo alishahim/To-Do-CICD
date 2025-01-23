@@ -28,6 +28,8 @@ pipeline {
                 sh """
                     # Add the EC2 host key to known_hosts
                     ssh-keyscan -H ${EC2_IP} >> ~/.ssh/known_hosts
+                    """
+                sh """
                     # Install Nginx if not already installed
                     ssh ${EC2_USER}@${EC2_IP} << 'EOF'
                     sudo apt update
@@ -35,19 +37,21 @@ pipeline {
                     sudo systemctl start nginx
                     sudo systemctl enable nginx
                     EOF
-
+                    """
+                sh """
                     # Create the web root directory if it doesn't exist
                     ssh ${EC2_USER}@${EC2_IP} << 'EOF'
                     sudo mkdir -p /var/www/html
                     sudo chmod 755 /var/www/html
                     EOF
-
+                    """
+                sh """
                     # Copy React app to the web root directory
                     scp -r build ${EC2_USER}@${EC2_IP}:/home/${EC2_USER}/react-app
                     ssh ${EC2_USER}@${EC2_IP} << 'EOF'
                     sudo rm -rf /var/www/html/*
                     sudo cp -r /home/${EC2_USER}/react-app/* /var/www/html/
-
+                    
                     # Restart Nginx to reflect changes
                     sudo systemctl restart nginx
                     EOF
