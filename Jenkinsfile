@@ -32,10 +32,9 @@ pipeline {
 
                     // Install and configure Nginx on EC2
                     sh """
-                    ssh ${EC2_USER}@${EC2_IP} << 'EOF'
+                    ssh ${EC2_USER}@${EC2_IP} 
                     sudo mkdir -p /var/www/html
                     sudo chmod 755 /var/www/html
-                    EOF
                     """
 
                     // Copy the React build files to the EC2 instance
