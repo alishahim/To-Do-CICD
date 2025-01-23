@@ -31,10 +31,9 @@ pipeline {
                     """
                     // Deploy the React app and restart Nginx
                     sh """
-                    ssh ${EC2_USER}@${EC2_IP} << 'EOF'
+                    ssh ${EC2_USER}@${EC2_IP}
                     sudo rm -rf /var/www/html/*
                     sudo cp -r /home/${EC2_USER}/react-app/* /var/www/html/
-                    EOF
                     """
                 }
 
