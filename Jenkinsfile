@@ -28,8 +28,6 @@ pipeline {
                 sh """
                     # Add the EC2 host key to known_hosts
                     ssh-keyscan -H ${EC2_IP} >> ~/.ssh/known_hosts
-                    """
-                sh """
                     # Install Nginx if not already installed
                     ssh ${EC2_USER}@${EC2_IP} << 'EOF'
                     sudo apt update
@@ -51,7 +49,7 @@ pipeline {
                     ssh ${EC2_USER}@${EC2_IP} << 'EOF'
                     sudo rm -rf /var/www/html/*
                     sudo cp -r /home/${EC2_USER}/react-app/* /var/www/html/
-                    
+
                     # Restart Nginx to reflect changes
                     sudo systemctl restart nginx
                     EOF
