@@ -26,9 +26,9 @@ pipeline {
             steps {
                sshagent(['credential-id']) {
                     // Add the EC2 host key to known_hosts
-                    // sh """
-                    // ssh-keyscan -H ${EC2_IP} >> ~/.ssh/known_hosts
-                    // """
+                    sh """
+                    ssh-keyscan -H ${EC2_IP} >> ~/.ssh/known_hosts
+                    """
 
                     // Install and configure Nginx on EC2
                     sh """
