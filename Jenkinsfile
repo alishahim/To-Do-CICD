@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    tools {
+        nodejs 'NodeJS_20'
+    }
     environment {
         EC2_IP = '44.213.99.31'
         EC2_USER = 'ubuntu'
