@@ -26,13 +26,30 @@ pipeline {
             steps {
                sshagent(['credential-id']) {
                 sh """
-                scp -o StrictHostKeyChecking=no -r todo/build ${EC2_USER}@${EC2_IP}:/home/${EC2_USER}/react-app
-                ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_IP} << EOF
-                sudo rm -rf /var/www/html/*
-                sudo cp -r /home/${EC2_USER}/react-app/* /var/www/html/
-                sudo systemctl restart nginx
-                EOF
-                """
+                    # Install Nginx if not already installed
+                    ssh ${EC2_USER}@${EC2_IP} << 'EOF'
+                    sudo apt update
+                    sudo apt install -y nginx
+                    sudo systemctl start nginx
+                    sudo systemctl enable nginx
+                    EOF
+
+                    # Create the web root directory if it doesn't exist
+                    ssh ${EC2_USER}@${EC2_IP} << 'EOF'
+                    sudo mkdir -p /var/www/html
+                    sudo chmod 755 /var/www/html
+                    EOF
+
+                    # Copy React app to the web root directory
+                    scp -r build ${EC2_USER}@${EC2_IP}:/home/${EC2_USER}/react-app
+                    ssh ${EC2_USER}@${EC2_IP} << 'EOF'
+                    sudo rm -rf /var/www/html/*
+                    sudo cp -r /home/${EC2_USER}/react-app/* /var/www/html/
+
+                    # Restart Nginx to reflect changes
+                    sudo systemctl restart nginx
+                    EOF
+                    """
                 }
 
             }
