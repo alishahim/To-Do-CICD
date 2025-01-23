@@ -26,14 +26,30 @@ pipeline {
             steps {
                sshagent(['credential-id']) {
                     // Add the EC2 host key to known_hosts
+                    // sh """
+                    // ssh-keyscan -H ${EC2_IP} >> ~/.ssh/known_hosts
+                    // """
+
+                    // Install and configure Nginx on EC2
                     sh """
-                    ssh-keyscan -H ${EC2_IP} >> ~/.ssh/known_hosts
+                    ssh ${EC2_USER}@${EC2_IP} << 'EOF'
+                    sudo mkdir -p /var/www/html
+                    sudo chmod 755 /var/www/html
+                    EOF
                     """
+
+                    // Copy the React build files to the EC2 instance
+                    sh """
+                    scp -r todo/build ${EC2_USER}@${EC2_IP}:/home/${EC2_USER}/react-app
+                    """
+
                     // Deploy the React app and restart Nginx
                     sh """
-                    ssh ${EC2_USER}@${EC2_IP}
+                    ssh ${EC2_USER}@${EC2_IP} << 'EOF'
                     sudo rm -rf /var/www/html/*
                     sudo cp -r /home/${EC2_USER}/react-app/* /var/www/html/
+                    sudo systemctl restart nginx
+                    EOF
                     """
                 }
 
