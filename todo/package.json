@@ -1,7 +1,7 @@
 {
   "name": "todo",
   "version": "0.1.0",
-  "homepage": "http://ec2-44-213-99-31.compute-1.amazonaws.com",
+  "homepage": "/",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.1",
