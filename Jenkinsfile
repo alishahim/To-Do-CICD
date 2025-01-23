@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/Inno-Tech-Academy/To-Do-CICD.git'
+                git branch: 'main', url: 'https://github.com/aidiko20/To-Do-CICD.git'
             }
         }
         stage('Build') {
