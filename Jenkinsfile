@@ -33,10 +33,6 @@ pipeline {
                     // Install and configure Nginx on EC2
                     sh """
                     ssh ${EC2_USER}@${EC2_IP} << 'EOF'
-                    sudo apt update
-                    sudo apt install -y nginx
-                    sudo systemctl start nginx
-                    sudo systemctl enable nginx
                     sudo mkdir -p /var/www/html
                     sudo chmod 755 /var/www/html
                     EOF
