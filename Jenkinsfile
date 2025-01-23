@@ -25,7 +25,7 @@ pipeline {
         stage('Deploy') {
             steps {
                sshagent(['credential-id']) {
-                sh """
+                    sh """
                     # Add the EC2 host key to known_hosts
                     ssh-keyscan -H ${EC2_IP} >> ~/.ssh/known_hosts
                     # Install Nginx if not already installed
@@ -36,14 +36,14 @@ pipeline {
                     sudo systemctl enable nginx
                     EOF
                     """
-                sh """
+                    sh """
                     # Create the web root directory if it doesn't exist
                     ssh ${EC2_USER}@${EC2_IP} << 'EOF'
                     sudo mkdir -p /var/www/html
                     sudo chmod 755 /var/www/html
                     EOF
                     """
-                sh """
+                    sh """
                     # Copy React app to the web root directory
                     scp -r build ${EC2_USER}@${EC2_IP}:/home/${EC2_USER}/react-app
                     ssh ${EC2_USER}@${EC2_IP} << 'EOF'
