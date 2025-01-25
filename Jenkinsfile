@@ -13,9 +13,9 @@ pipeline {
                 // Clone the repository
                 script {
                     if (isUnix()) {
-                        sh 'git clone -b main https://github.com/aidiko20/To-Do-CICD.git'
+                        sh 'git clone -b main https://github.com/alishahim/To-Do-CICD.git'
                     } else {
-                        bat 'git clone -b main https://github.com/aidiko20/To-Do-CICD.git'
+                        bat 'git clone -b main https://github.com/alishahim/To-Do-CICD.git'
                     }
                 }
             }
