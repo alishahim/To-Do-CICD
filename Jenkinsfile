@@ -27,7 +27,8 @@ pipeline {
                         sh '''
                         cd todo
                         npm install
-                        npm run build                        '''
+                        npm run build
+                        '''
                     } else {
                         bat '''
                         cd todo
@@ -77,3 +78,5 @@ pipeline {
         }
     }
 }
+
+   
