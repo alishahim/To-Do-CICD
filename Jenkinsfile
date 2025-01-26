@@ -46,13 +46,13 @@ pipeline {
                         if (isUnix()) {
                             sh '''
                             # Ensure target directories exist on EC2
-                            ssh ${EC2_USER}@${EC2_IP} "mkdir -p /home/ubuntu/react-app"
+                            ssh ${EC2_USER}@${EC2_IP} "mkdir -p /home/ubuntu/jenkins"
 
                             # Copy the deploy.sh file to EC2
                             scp deploy.sh ${EC2_USER}@${EC2_IP}:/home/${EC2_USER}/deploy.sh
 
                             # Copy the build folder to EC2
-                            scp -r todo/build ${EC2_USER}@${EC2_IP}:/home/${EC2_USER}/react-app
+                            scp -r todo/build ${EC2_USER}@${EC2_IP}:/home/${EC2_USER}/jenkins
 
                             # Run the deploy.sh script on EC2
                             ssh ${EC2_USER}@${EC2_IP} "bash /home/${EC2_USER}/deploy.sh"
@@ -60,13 +60,13 @@ pipeline {
                         } else {
                             bat '''
                             REM Ensure target directories exist on EC2
-                            powershell ssh ${EC2_USER}@${EC2_IP} "mkdir -p /home/ubuntu/react-app"
+                            powershell ssh ${EC2_USER}@${EC2_IP} "mkdir -p /home/ubuntu/jenkins"
 
                             REM Copy the deploy.sh file to EC2
                             powershell scp deploy.sh ${EC2_USER}@${EC2_IP}:/home/${EC2_USER}/deploy.sh
 
                             REM Copy the build folder to EC2
-                            powershell scp -r todo/build ${EC2_USER}@${EC2_IP}:/home/${EC2_USER}/react-app
+                            powershell scp -r todo/build ${EC2_USER}@${EC2_IP}:/home/${EC2_USER}/jenkins
 
                             REM Run the deploy.sh script on EC2
                             powershell ssh ${EC2_USER}@${EC2_IP} "bash /home/${EC2_USER}/deploy.sh"
