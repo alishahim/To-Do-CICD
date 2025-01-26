@@ -26,8 +26,9 @@ pipeline {
                     if (isUnix()) {
                         sh '''
                         cd todo
-                        npm install
+                        nmp install
                         npm run build
+                    
                         '''
                     } else {
                         bat '''
