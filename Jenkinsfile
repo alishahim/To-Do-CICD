@@ -1,83 +1,49 @@
 pipeline {
     agent any
     tools {
-        nodejs 'NodeJS_20'
+        nodejs "NodeJS" // Name configured in Global Tool Configuration
     }
     environment {
-        EC2_IP = '44.213.99.31'
-        EC2_USER = 'ubuntu'
+        EC2_IP = "54.158.217.219"
+        EC2_USER = "ubuntu"
     }
     stages {
-        stage('Checkout') {
+        stage("Checkout") {
             steps {
-                // Clone the repository
-                script {
-                    if (isUnix()) {
-                        sh 'git clone -b main https://github.com/alishahim/To-Do-CICD.git'
-                    } else {
-                        bat 'git clone -b main https://github.com/alishahim/To-Do-CICD.git'
-                    }
-                }
+                 git branch: "main", url: "https://github.com/alishahim/To-Do-CICD.git"
             }
         }
-        stage('Build') {
+        stage("Build") {
             steps {
-                script {
-                    if (isUnix()) {
-                        sh '''
-                        cd todo
-                        nmp install
-                        npm run build
-                    
-                        '''
-                    } else {
-                        bat '''
-                        cd todo
-                        npm install
-                        npm run build
-                        '''
-                    }
-                }
+                sh '''
+                echo "Building the application..."
+                cd todo
+                npm install
+                npm run build
+                echo "Build completed successfully."
+                '''
             }
         }
-        stage('Deploy') {
+        stage("Deploy") {
             steps {
                 sshagent(['credential-id']) {
                     script {
-                        if (isUnix()) {
-                            sh '''
-                            # Ensure target directories exist on EC2
-                            ssh ${EC2_USER}@${EC2_IP} "mkdir -p /home/ubuntu/react-app"
+                        sh """
+                        # Disable host key checking to avoid manual prompts
+                        ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_IP} 'mkdir -p /home/${EC2_USER}/react-app'
 
-                            # Copy the deploy.sh file to EC2
-                            scp deploy.sh ${EC2_USER}@${EC2_IP}:/home/${EC2_USER}/deploy.sh
+                        # Copy the deployment script to the remote server
+                        scp -o StrictHostKeyChecking=no deploy.sh ${EC2_USER}@${EC2_IP}:/home/${EC2_USER}/deploy.sh
 
-                            # Copy the build folder to EC2
-                            scp -r todo/build ${EC2_USER}@${EC2_IP}:/home/${EC2_USER}/react-app
+                        # Copy the React build directory to the remote server
+                        scp -r -o StrictHostKeyChecking=no todo/build ${EC2_USER}@${EC2_IP}:/home/${EC2_USER}/react-app
 
-                            # Run the deploy.sh script on EC2
-                            ssh ${EC2_USER}@${EC2_IP} "bash /home/${EC2_USER}/deploy.sh"
-                            '''
-                        } else {
-                            bat '''
-                            REM Ensure target directories exist on EC2
-                            powershell ssh ${EC2_USER}@${EC2_IP} "mkdir -p /home/ubuntu/jenkins"
-
-                            REM Copy the deploy.sh file to EC2
-                            powershell scp deploy.sh ${EC2_USER}@${EC2_IP}:/home/${EC2_USER}/deploy.sh
-
-                            REM Copy the build folder to EC2
-                            powershell scp -r todo/build ${EC2_USER}@${EC2_IP}:/home/${EC2_USER}/jenkins
-
-                            REM Run the deploy.sh script on EC2
-                            powershell ssh ${EC2_USER}@${EC2_IP} "bash /home/${EC2_USER}/deploy.sh"
-                            '''
-                        }
+                        # Execute the deployment script on the remote server
+                        ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_IP} 'bash /home/${EC2_USER}/deploy.sh'
+                        """
                     }
                 }
             }
         }
     }
 }
-
-   
